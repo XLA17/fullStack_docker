@@ -1,9 +1,16 @@
-FROM node:22
+FROM ubuntu:latest
 
 WORKDIR /app
 
+RUN apt-get update && \
+    apt-get install -y \
+    nodejs \
+    npm \
+    mysql-client \
+    && apt-get clean
+
 COPY package*.json ./
-RUN npm install express bcrypt jsonwebtoken cors body-parser
+RUN npm install express mysql2 bcrypt jsonwebtoken cors body-parser
 
 COPY . .
 

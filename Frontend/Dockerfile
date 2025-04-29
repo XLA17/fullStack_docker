@@ -1,6 +1,11 @@
-FROM node:22
+FROM ubuntu:latest
 
 WORKDIR /app
+
+RUN apt-get update && \
+    apt-get install -y \
+    npm \
+    && apt-get clean
 
 COPY package*.json ./
 RUN npm install

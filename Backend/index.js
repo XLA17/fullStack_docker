@@ -4,8 +4,13 @@ const bcrypt = require('bcrypt');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
+const MorpyamDatabase = require('./Databases/MorpyamDatabase')
+
 const app = express();
 const users = []; // Exemple : à remplacer par une base de données
+
+const db = new MorpyamDatabase();
+
 const JWT_SECRET = 'votre_secret_ultra_complexe';
 
 app.use(cors());
@@ -20,6 +25,9 @@ app.post('/register', async (req, res) => {
   const { username, password } = req.body;
   const hashedPassword = await bcrypt.hash(password, 10);
   users.push({ username, password: hashedPassword });
+
+  db.getDate();
+
   res.json({ message: 'Utilisateur enregistré !' });
 });
 
@@ -28,6 +36,7 @@ app.post('/login', async (req, res) => {
   const { username, password } = req.body;
   console.log(users);
   const user = users.find(u => u.username === username);
+  db.getDate();
   if (!user){
     return res.status(401).json({ error: "User don't exist" });
   } else if (!(await bcrypt.compare(password, user.password))) {
@@ -54,6 +63,7 @@ function authMiddleware(req, res, next) {
 
 // Route protégée
 app.get('/profile', authMiddleware, (req, res) => {
+  db.getDate();
   res.json({ message: `Bienvenue ${req.user.username}` });
 });
 
